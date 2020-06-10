@@ -1,47 +1,48 @@
 import math
 import matplotlib.pyplot as plt
+from distribution import Distribution
 
 
-class Gaussian():
+class Gaussian(Distribution):
     """ Gaussian distribution class for calculating and 
     visualizing a Gaussian distribution.
 
     Attributes:
-        mean (float) representing the mean value of the distribution
-        stdev (float) representing the standard deviation of the distribution
-        data_list (list of floats) a list of floats extracted from the data file
+            mean (float) representing the mean value of the distribution
+            stdev (float) representing the standard deviation of the distribution
+            data_list (list of floats) a list of floats extracted from the data file
 
     """
 
     def __init__(self, mu=0, sigma=1):
 
-        self.mean = mu
-        self.stdev = sigma
-        self.data = []
+        Distribution.__init__(self, mu, sigma)
 
     def calculate_mean(self):
-        """Method to calculate the mean of the data set.
+        """Function to calculate the mean of the data set.
 
         Args: 
-            None
+                None
 
         Returns: 
-            float: mean of the data set
+                float: mean of the data set
 
         """
 
-        new_mean = 1.0 * sum(self.data) / len(self.data)
-        self.mean = new_mean
+        avg = 1.0 * sum(self.data) / len(self.data)
+
+        self.mean = avg
+
         return self.mean
 
     def calculate_stdev(self, sample=True):
-        """Method to calculate the standard deviation of the data set.
+        """Function to calculate the standard deviation of the data set.
 
         Args: 
-            sample (bool): whether the data represents a sample or population
+                sample (bool): whether the data represents a sample or population
 
         Returns: 
-            float: standard deviation of the data set
+                float: standard deviation of the data set
 
         """
 
@@ -49,28 +50,33 @@ class Gaussian():
             n = len(self.data) - 1
         else:
             n = len(self.data)
+
         mean = self.mean
+
         sigma = 0
+
         for d in self.data:
             sigma += (d - mean) ** 2
+
         sigma = math.sqrt(sigma / n)
+
         self.stdev = sigma
+
         return self.stdev
 
     def read_data_file(self, file_name, sample=True):
-        """Method to read in data from a txt file. The txt file should have
+        """Function to read in data from a txt file. The txt file should have
         one number (float) per line. The numbers are stored in the data attribute. 
         After reading in the file, the mean and standard deviation are calculated
 
         Args:
-            file_name (string): name of a file to read from
+                file_name (string): name of a file to read from
 
         Returns:
-            None
+                None
 
         """
 
-        # This code opens a data file and appends the data to a list called data_list
         with open(file_name) as file:
             data_list = []
             line = file.readline()
@@ -84,44 +90,43 @@ class Gaussian():
         self.stdev = self.calculate_stdev(sample)
 
     def plot_histogram(self):
-        """Method to output a histogram of the instance variable data using 
+        """Function to output a histogram of the instance variable data using 
         matplotlib pyplot library.
 
         Args:
-            None
+                None
 
         Returns:
-            None
+                None
         """
-
         plt.hist(self.data)
-        plt.title("Histogram of Data")
-        plt.xlabel("data")
-        plt.ylabel("count")
+        plt.title('Histogram of Data')
+        plt.xlabel('data')
+        plt.ylabel('count')
 
     def pdf(self, x):
         """Probability density function calculator for the gaussian distribution.
 
         Args:
-            x (float): point for calculating the probability density function
+                x (float): point for calculating the probability density function
 
 
         Returns:
-            float: probability density function output
+                float: probability density function output
         """
 
-        return (1.0 / (self.stdev * math.sqrt(2 * math.pi))) * math.exp(-0.5 * ((x - self.mean) / self.stdev) ** 2)
+        return (1.0 / (self.stdev * math.sqrt(2*math.pi))) * math.exp(-0.5*((x - self.mean) / self.stdev) ** 2)
 
     def plot_histogram_pdf(self, n_spaces=50):
-        """Method to plot the normalized histogram of the data and a plot of the 
+        """Function to plot the normalized histogram of the data and a plot of the 
         probability density function along the same range
 
         Args:
-            n_spaces (int): number of data points 
+                n_spaces (int): number of data points 
 
         Returns:
-            list: x values for the pdf plot
-            list: y values for the pdf plot
+                list: x values for the pdf plot
+                list: y values for the pdf plot
 
         """
 
@@ -131,7 +136,7 @@ class Gaussian():
         min_range = min(self.data)
         max_range = max(self.data)
 
-        # calculates the interval between x values
+ # calculates the interval between x values
         interval = 1.0 * (max_range - min_range) / n_spaces
 
         x = []
@@ -159,13 +164,13 @@ class Gaussian():
         return x, y
 
     def __add__(self, other):
-        """Magic method to add together two Gaussian distributions
+        """Function to add together two Gaussian distributions
 
         Args:
-            other (Gaussian): Gaussian instance
+                other (Gaussian): Gaussian instance
 
         Returns:
-            Gaussian: Gaussian distribution
+                Gaussian: Gaussian distribution
 
         """
 
@@ -176,14 +181,14 @@ class Gaussian():
         return result
 
     def __repr__(self):
-        """Magic method to output the characteristics of the Gaussian instance
+        """Function to output the characteristics of the Gaussian instance
 
-            Args:
+        Args:
                 None
 
-            Returns:
+        Returns:
                 string: characteristics of the Gaussian
 
-            """
+        """
 
         return "mean {}, standard deviation {}".format(self.mean, self.stdev)
